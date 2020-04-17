@@ -99,8 +99,9 @@ px4_add_romfs_files(
 	# [7000, 7999] Hexarotor +"
 	7001_hexa_+
 
-	# [8000, 8999] Octorotor +"
+	# [8000, 8999] Octorotor x"
 	8001_octo_x
+	8002_octo_x_reversed
 
 	# [9000, 9999] Octorotor +"
 	9001_octo_+
