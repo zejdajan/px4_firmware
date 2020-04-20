@@ -63,6 +63,8 @@
 
 using namespace time_literals;
 
+#define MRS_DISABLE_FEATURE true
+
 namespace Preflight
 {
 
@@ -148,6 +150,7 @@ static bool magnometerCheck(orb_advert_t *mavlink_log_pub, vehicle_status_s &sta
 	return success;
 }
 
+#ifndef MRS_DISABLE_FEATURE
 static bool imuConsistencyCheck(orb_advert_t *mavlink_log_pub, vehicle_status_s &status, const bool report_status)
 {
 	float test_limit = 1.0f; // pass limit re-used for each test
@@ -196,8 +199,10 @@ static bool imuConsistencyCheck(orb_advert_t *mavlink_log_pub, vehicle_status_s 
 
 	return true;
 }
+#endif
 
 // return false if the magnetomer measurements are inconsistent
+#ifndef MRS_DISABLE_FEATURE
 static bool magConsistencyCheck(orb_advert_t *mavlink_log_pub, vehicle_status_s &status, const bool report_status)
 {
 	bool pass = false; // flag for result of checks
@@ -230,6 +235,7 @@ static bool magConsistencyCheck(orb_advert_t *mavlink_log_pub, vehicle_status_s 
 
 	return pass;
 }
+#endif
 
 static bool accelerometerCheck(orb_advert_t *mavlink_log_pub, vehicle_status_s &status, const uint8_t instance,
 			       const bool optional, const bool dynamic, int32_t &device_id, const bool report_fail)
@@ -556,6 +562,7 @@ static bool ekf2Check(orb_advert_t *mavlink_log_pub, vehicle_status_s &vehicle_s
 	// check magnetometer innovation test ratio
 	param_get(param_find("COM_ARM_EKF_YAW"), &test_limit);
 
+#ifndef MRS_DISABLE_FEATURE
 	if (status.mag_test_ratio > test_limit) {
 		if (report_fail) {
 			mavlink_log_critical(mavlink_log_pub, "Preflight Fail: Yaw estimate error");
@@ -564,6 +571,7 @@ static bool ekf2Check(orb_advert_t *mavlink_log_pub, vehicle_status_s &vehicle_s
 		success = false;
 		goto out;
 	}
+#endif
 
 	// check accelerometer delta velocity bias estimates
 	param_get(param_find("COM_ARM_EKF_AB"), &test_limit);
@@ -780,9 +788,11 @@ bool preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_status_s &status, veh
 			}
 
 			/* mag consistency checks (need to be performed after the individual checks) */
+#ifndef MRS_DISABLE_FEATURE
 			if (!magConsistencyCheck(mavlink_log_pub, status, (reportFailures && !failed))) {
 				failed = true;
 			}
+#endif
 		}
 	}
 
@@ -912,11 +922,13 @@ bool preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_status_s &status, veh
 
 	/* ---- IMU CONSISTENCY ---- */
 	// To be performed after the individual sensor checks have completed
+#ifndef MRS_DISABLE_FEATURE
 	if (checkSensors) {
 		if (!imuConsistencyCheck(mavlink_log_pub, status, (reportFailures && !failed))) {
 			failed = true;
 		}
 	}
+#endif
 
 	/* ---- AIRSPEED ---- */
 	if (checkAirspeed) {
