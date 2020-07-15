@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# @name Quadcopter X with dshot (outputs on AUX)
+#
+# @type Quadrotor x
+# @class Copter
+#
+# @output AUX1 motor 1
+# @output AUX2 motor 2
+# @output AUX3 motor 3
+# @output AUX4 motor 4
+#
+# @maintainer Lorenz Meier <lorenz@px4.io>
+#
+
+sh /etc/init.d/rc.mc_defaults
+
+set MIXER quad_x_dshot
+
+set PWM_OUT 1234

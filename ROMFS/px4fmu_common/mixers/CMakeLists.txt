@@ -64,6 +64,7 @@ px4_add_romfs_files(
 	octo_cox_w.main.mix
 	octo_+.main.mix
 	octo_x.main.mix
+	octo_x_reversed.main.mix
 	pass.aux.mix
 	phantom.main.mix
 	quad_dc.main.mix
@@ -74,6 +75,7 @@ px4_add_romfs_files(
 	quad_w.main.mix
 	quad_x_can.main.mix
 	quad_x.main.mix
+	quad_x_dshot.aux.mix
 	quad_x_vtol.main.mix
 	stampede.main.mix
 	tri_y_yaw-.main.mix

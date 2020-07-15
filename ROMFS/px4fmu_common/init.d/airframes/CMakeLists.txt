@@ -61,6 +61,7 @@ px4_add_romfs_files(
 	# [4000, 4999] Quadrotor x"
 	4001_quad_x
 	4002_quad_x_mount
+	4016_quad_x_dshot
 	4003_qavr5
 	4004_H4_680mm
 	4009_qav250
