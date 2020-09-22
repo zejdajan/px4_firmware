@@ -13,11 +13,12 @@ eval "$(ssh-agent -s)"
 chmod 600 ./.ci/deploy_key_github
 ssh-add ./.ci/deploy_key_github
 
-sudo apt-get update -qq
+sudo apt-get -y update -qq
 sudo apt-mark hold openssh-server
-sudo apt -y upgrade --fix-missing
 
-sudo apt-get install git # dpkg python-setuptools python3-setuptools python3-pip
+sudo apt-get -y upgrade --fix-missing
+
+sudo apt-get -y install git
 
 echo "installing uav_core pre-requisities"
 git clone https://github.com/ctu-mrs/uav_core
@@ -46,7 +47,7 @@ cd ~/simulation/.gitman/$PACKAGE_NAME
 git checkout "$SHA"
 
 # will need this to test the compilation
-sudo apt -y install python-catkin-tools
+sudo apt-get -y install python-catkin-tools
 
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
