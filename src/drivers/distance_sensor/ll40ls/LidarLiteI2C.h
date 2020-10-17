@@ -85,7 +85,7 @@ static constexpr float LL40LS_MAX_DISTANCE{25.00f};
 static constexpr float LL40LS_MAX_DISTANCE_V2{35.00f};
 
 // Normal conversion wait time.
-static constexpr uint32_t LL40LS_CONVERSION_INTERVAL{50_ms};
+static constexpr uint32_t LL40LS_CONVERSION_INTERVAL{10_ms};
 
 // Maximum time to wait for a conversion to complete.
 static constexpr uint32_t LL40LS_CONVERSION_TIMEOUT{100_ms};
