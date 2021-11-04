@@ -81,7 +81,8 @@ set(models none shell
 	plane plane_cam plane_catapult plane_lidar
 	standard_vtol tailsitter tiltrotor
 	rover r1_rover boat cloudship
-	uuv_hippocampus)
+	uuv_hippocampus
+	fully_actuated)
 set(worlds none empty baylands ksql_airport mcmillan_airfield sonoma_raceway warehouse windy)
 set(all_posix_vmd_make_targets)
 foreach(viewer ${viewers})
