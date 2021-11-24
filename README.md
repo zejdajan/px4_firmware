@@ -87,7 +87,7 @@ This repository contains code supporting these boards:
     * [CUAV V5 nano](https://docs.px4.io/master/en/flight_controller/cuav_v5_nano.html)
   * [Airmind MindPX V2.8](http://www.mindpx.net/assets/accessories/UserGuide_MindPX.pdf)
   * [Airmind MindRacer V1.2](http://mindpx.net/assets/accessories/mindracer_user_guide_v1.2.pdf)
-  * [Bitcraze Crazyflie 2.0](https://docs.px4.io/master/en/flight_controller/crazyflie2.html)
+  * [Bitcraze Crazyflie 2.0](https://docs.px4.io/master/en/complete_vehicles/crazyflie2.html)
   * [Omnibus F4 SD](https://docs.px4.io/master/en/flight_controller/omnibus_f4_sd.html)
   * [Holybro Durandal](https://docs.px4.io/master/en/flight_controller/durandal.html)
   * [Holybro Kakute F7](https://docs.px4.io/master/en/flight_controller/kakutef7.html)
