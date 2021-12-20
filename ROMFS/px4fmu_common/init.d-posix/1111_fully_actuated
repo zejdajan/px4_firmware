@@ -2,7 +2,7 @@
 #
 # @name Typhoon H480 SITL
 #
-# @type Hexarotor x
+# @type Hexarotor x with tilted rotors
 #
 
 sh /etc/init.d/rc.mc_defaults
