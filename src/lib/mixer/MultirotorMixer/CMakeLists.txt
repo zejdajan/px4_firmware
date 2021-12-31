@@ -81,7 +81,7 @@ add_custom_target(mixer_gen DEPENDS mixer_multirotor.generated.h ${CMAKE_CURRENT
 # 6DOF mixers
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mixer_multirotor_6dof.generated.h
-	COMMAND ${PYTHON_EXECUTABLE} ${MIXER_TOOLS}/px_generate_mixers.py --sixdof -f ${geometries_list} -o mixer_multirotor_6dof.generated.h
+	COMMAND ${PYTHON_EXECUTABLE} ${MIXER_TOOLS}/px_generate_mixers.py -f ${geometries_list} -o mixer_multirotor_6dof.generated.h
 	DEPENDS ${MIXER_TOOLS}/px_generate_mixers.py ${geometries_list}
 	)
 add_custom_target(mixer_gen_6dof DEPENDS mixer_multirotor_6dof.generated.h)

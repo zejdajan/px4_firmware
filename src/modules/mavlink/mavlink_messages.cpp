@@ -3646,6 +3646,18 @@ protected:
 			vehicle_rates_setpoint_s att_rates_sp{};
 			_att_rates_sp_sub.copy(&att_rates_sp);
 
+			if (att_sp.q_d_valid) {
+				memcpy(&msg.q[0], &att_sp.q_d[0], sizeof(msg.q));
+
+			} else {
+				matrix::Quatf q = matrix::Eulerf(att_sp.roll_body, att_sp.pitch_body, att_sp.yaw_body);
+
+				for (size_t i = 0; i < 4; i++) {
+					msg.q[i] = q(i);
+				}
+			}
+
+
 			msg.body_roll_rate = att_rates_sp.roll;
 			msg.body_pitch_rate = att_rates_sp.pitch;
 			msg.body_yaw_rate = att_rates_sp.yaw;

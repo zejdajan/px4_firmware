@@ -52,23 +52,21 @@
 using matrix::Eulerf;
 using matrix::Quatf;
 
-GpsFailure::GpsFailure(Navigator *navigator) :
-	MissionBlock(navigator),
-	ModuleParams(navigator)
+GpsFailure::GpsFailure(Navigator *navigator) : MissionBlock(navigator),
+											   ModuleParams(navigator)
 {
 }
 
-void
-GpsFailure::on_inactive()
+void GpsFailure::on_inactive()
 {
 	/* reset GPSF state only if setpoint moved */
-	if (!_navigator->get_can_loiter_at_sp()) {
+	if (!_navigator->get_can_loiter_at_sp())
+	{
 		_gpsf_state = GPSF_STATE_NONE;
 	}
 }
 
-void
-GpsFailure::on_activation()
+void GpsFailure::on_activation()
 {
 	_gpsf_state = GPSF_STATE_NONE;
 	_timestamp_activation = hrt_absolute_time();
@@ -76,40 +74,44 @@ GpsFailure::on_activation()
 	set_gpsf_item();
 }
 
-void
-GpsFailure::on_active()
+void GpsFailure::on_active()
 {
-	switch (_gpsf_state) {
-	case GPSF_STATE_LOITER: {
-			/* Position controller does not run in this mode:
+	switch (_gpsf_state)
+	{
+	case GPSF_STATE_LOITER:
+	{
+		/* Position controller does not run in this mode:
 			 * navigator has to publish an attitude setpoint */
-			vehicle_attitude_setpoint_s att_sp = {};
-			att_sp.timestamp = hrt_absolute_time();
-			att_sp.roll_body = math::radians(_param_nav_gpsf_r.get());
-			att_sp.pitch_body = math::radians(_param_nav_gpsf_p.get());
-			att_sp.thrust_body[0] = _param_nav_gpsf_tr.get();
+		vehicle_attitude_setpoint_s att_sp = {};
+		att_sp.timestamp = hrt_absolute_time();
+		att_sp.roll_body = math::radians(_param_nav_gpsf_r.get());
+		att_sp.pitch_body = math::radians(_param_nav_gpsf_p.get());
+		att_sp.thrust_body[0] = _param_nav_gpsf_tr.get();
 
-			Quatf q(Eulerf(att_sp.roll_body, att_sp.pitch_body, 0.0f));
-			q.copyTo(att_sp.q_d);
+		Quatf q(Eulerf(att_sp.roll_body, att_sp.pitch_body, 0.0f));
+		q.copyTo(att_sp.q_d);
+		att_sp.q_d_valid = true;
 
-			if (_navigator->get_vstatus()->is_vtol) {
-				_fw_virtual_att_sp_pub.publish(att_sp);
-
-			} else {
-				_att_sp_pub.publish(att_sp);
-
-			}
-
-			/* Measure time */
-			if ((_param_nav_gpsf_lt.get() > FLT_EPSILON) &&
-			    (hrt_elapsed_time(&_timestamp_activation) > _param_nav_gpsf_lt.get() * 1e6f)) {
-				/* no recovery, advance the state machine */
-				PX4_WARN("GPS not recovered, switching to next failure state");
-				advance_gpsf();
-			}
-
-			break;
+		if (_navigator->get_vstatus()->is_vtol)
+		{
+			_fw_virtual_att_sp_pub.publish(att_sp);
 		}
+		else
+		{
+			_att_sp_pub.publish(att_sp);
+		}
+
+		/* Measure time */
+		if ((_param_nav_gpsf_lt.get() > FLT_EPSILON) &&
+			(hrt_elapsed_time(&_timestamp_activation) > _param_nav_gpsf_lt.get() * 1e6f))
+		{
+			/* no recovery, advance the state machine */
+			PX4_WARN("GPS not recovered, switching to next failure state");
+			advance_gpsf();
+		}
+
+		break;
+	}
 
 	case GPSF_STATE_TERMINATE:
 		set_gpsf_item();
@@ -121,8 +123,7 @@ GpsFailure::on_active()
 	}
 }
 
-void
-GpsFailure::set_gpsf_item()
+void GpsFailure::set_gpsf_item()
 {
 	struct position_setpoint_triplet_s *pos_sp_triplet = _navigator->get_position_setpoint_triplet();
 
@@ -131,14 +132,16 @@ GpsFailure::set_gpsf_item()
 	pos_sp_triplet->current.valid = false;
 	pos_sp_triplet->next.valid = false;
 
-	switch (_gpsf_state) {
-	case GPSF_STATE_TERMINATE: {
-			/* Request flight termination from commander */
-			_navigator->get_mission_result()->flight_termination = true;
-			_navigator->set_mission_result_updated();
-			PX4_WARN("GPS failure: request flight termination");
-		}
-		break;
+	switch (_gpsf_state)
+	{
+	case GPSF_STATE_TERMINATE:
+	{
+		/* Request flight termination from commander */
+		_navigator->get_mission_result()->flight_termination = true;
+		_navigator->set_mission_result_updated();
+		PX4_WARN("GPS failure: request flight termination");
+	}
+	break;
 
 	default:
 		break;
@@ -147,10 +150,10 @@ GpsFailure::set_gpsf_item()
 	_navigator->set_position_setpoint_triplet_updated();
 }
 
-void
-GpsFailure::advance_gpsf()
+void GpsFailure::advance_gpsf()
 {
-	switch (_gpsf_state) {
+	switch (_gpsf_state)
+	{
 	case GPSF_STATE_NONE:
 		_gpsf_state = GPSF_STATE_LOITER;
 		mavlink_log_critical(_navigator->get_mavlink_log_pub(), "Global position failure: fixed bank loiter");

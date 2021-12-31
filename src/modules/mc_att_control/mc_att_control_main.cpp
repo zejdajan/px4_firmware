@@ -209,6 +209,7 @@ MulticopterAttitudeControl::generate_attitude_setpoint(const Quatf &q, float dt,
 	/* copy quaternion setpoint to attitude setpoint topic */
 	Quatf q_sp = Eulerf(attitude_setpoint.roll_body, attitude_setpoint.pitch_body, attitude_setpoint.yaw_body);
 	q_sp.copyTo(attitude_setpoint.q_d);
+	attitude_setpoint.q_d_valid = true;
 
 	attitude_setpoint.thrust_body[2] = -throttle_curve(_manual_control_setpoint.z);
 	attitude_setpoint.timestamp = hrt_absolute_time();
