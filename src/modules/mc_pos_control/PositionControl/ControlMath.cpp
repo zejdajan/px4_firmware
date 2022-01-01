@@ -59,6 +59,49 @@ namespace ControlMath
 			bodyzToAttitude(-thr_sp, yaw_sp, att_sp);
 			att_sp.thrust_body[2] = -thr_sp.length();
 		}
+
+		// Estimate the optimal tilt angle and direction to counteract the wind
+
+	// Calculate the setpoint z axis
+	Vector3f cmd_z;
+	matrix::Dcmf R_cmd = matrix::Quatf(att_sp.q_d);
+
+	for (int i = 0; i < 3; i++) {
+		cmd_z(i) = R_cmd(i, 2);
+	}
+
+	omni_status.tilt_angle_est = asinf(Vector2f(cmd_z(0), cmd_z(1)).norm() / cmd_z.norm());;
+	omni_status.tilt_direction_est = wrap_2pi(atan2f(-cmd_z(1), -cmd_z(0)));
+	omni_status.tilt_roll_est = att_sp.roll_body;
+	omni_status.tilt_pitch_est = att_sp.pitch_body;
+
+	// Calculate the current z axis
+	Vector3f curr_z;
+	matrix::Dcmf R_body = att;
+
+	for (int i = 0; i < 3; i++) {
+		curr_z(i) = R_body(i, 2);
+	}
+
+	// Calculate the tilt angle and direction
+	float current_tilt_angle = asinf(Vector2f(curr_z(0), curr_z(1)).norm() / curr_z.norm());
+	float current_tilt_dir = wrap_2pi(atan2f(-curr_z(1), -curr_z(0)));
+
+	omni_status.tilt_angle_meas = current_tilt_angle;
+	omni_status.tilt_direction_meas = current_tilt_dir;
+
+	// Save the optimal tilt angle and direction to counteract the wind
+	if (omni_att_mode == 5 || omni_att_mode == 6) {
+
+		// Calculate the tilt angle and direction
+		omni_att_tilt_angle = current_tilt_angle;
+		omni_att_tilt_dir = current_tilt_dir;
+
+		// Calculate the roll and pitch
+		Eulerf euler = R_body;
+		omni_att_roll = euler(0);
+		omni_att_pitch = euler(1);
+	}
 	}
 
 	void thrustToZeroTiltAttitude(const Vector3f &thr_sp, const float yaw_sp, const matrix::Quatf &att, int omni_proj_axes,

@@ -195,11 +195,12 @@ public:
 
 private:
 	bool _updateSuccessful();
+	bool _interfaceMapping();
 
 	void _positionControl(); ///< Position proportional control
 	void _velocityControl(const float dt); ///< Velocity PID control
-	void _accelerationControl(); ///< Acceleration setpoint processing
-
+/*	void _accelerationControl(); ///< Acceleration setpoint processing
+*/
 	// Gains
 	matrix::Vector3f _gain_pos_p; ///< Position control proportional gain
 	matrix::Vector3f _gain_vel_p; ///< Velocity control proportional gain
@@ -235,4 +236,7 @@ private:
 	matrix::Vector3f _thr_sp; /**< desired thrust */
 	float _yaw_sp{}; /**< desired heading */
 	float _yawspeed_sp{}; /** desired yaw-speed */
+
+		bool _skip_controller{false}; /**< skips position/velocity controller. true for stabilized mode */
+
 };
