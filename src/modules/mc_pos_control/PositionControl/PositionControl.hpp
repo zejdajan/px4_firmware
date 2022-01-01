@@ -138,7 +138,7 @@ public:
 	 * Note: NAN value means no feed forward/leave state uncontrolled if there's no higher order setpoint.
 	 * @param setpoint a vehicle_local_position_setpoint_s structure
 	 */
-	void setInputSetpoint(const vehicle_local_position_setpoint_s &setpoint);
+	bool setInputSetpoint(const vehicle_local_position_setpoint_s &setpoint);
 
 	/**
 	 * Pass constraints that are stricter than the global limits

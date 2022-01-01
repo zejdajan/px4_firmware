@@ -79,7 +79,7 @@ void PositionControl::setState(const PositionControlStates &states)
 	_vel_dot = states.acceleration;
 }
 
-void  PositionControl::setInputSetpoint(const vehicle_local_position_setpoint_s &setpoint)
+bool  PositionControl::setInputSetpoint(const vehicle_local_position_setpoint_s &setpoint)
 {
 _pos_sp = Vector3f(setpoint.x, setpoint.y, setpoint.z);
 	_vel_sp = Vector3f(setpoint.vx, setpoint.vy, setpoint.vz);
@@ -87,13 +87,14 @@ _pos_sp = Vector3f(setpoint.x, setpoint.y, setpoint.z);
 	_thr_sp = Vector3f(setpoint.thrust);
 	_yaw_sp = setpoint.yaw;
 	_yawspeed_sp = setpoint.yawspeed;
-	/*bool mapping_succeeded = _interfaceMapping();*/
+	bool mapping_succeeded = _interfaceMapping();
 
 	// If full manual is required (thrust already generated), don't run position/velocity
 	// controller and just return thrust.
 	_skip_controller = PX4_ISFINITE(_thr_sp(0)) && PX4_ISFINITE(_thr_sp(1))
 			   && PX4_ISFINITE(_thr_sp(2));
 
+	return mapping_succeeded;
 }
 
 void PositionControl::setConstraints(const vehicle_constraints_s &constraints, const float lim_thr_hor_max)
