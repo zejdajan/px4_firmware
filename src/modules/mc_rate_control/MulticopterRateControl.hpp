@@ -75,10 +75,12 @@ public:
 	/** @see ModuleBase */
 	static int print_usage(const char *reason = nullptr);
 
+
+	void Run() override;
+
 	bool init();
 
 private:
-	void Run() override;
 
 	/**
 	 * initialize some vectors/matrices from parameters
@@ -103,6 +105,7 @@ private:
 	uORB::Subscription _vehicle_angular_acceleration_sub{ORB_ID(vehicle_angular_acceleration)};
 	uORB::Subscription _vehicle_land_detected_sub{ORB_ID(vehicle_land_detected)};
 	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
+	uORB::Subscription _manual_control_sp_sub{ORB_ID(manual_control_setpoint)};	/**< manual control setpoint subscription */
 
 	uORB::SubscriptionCallbackWorkItem _vehicle_angular_velocity_sub{this, ORB_ID(vehicle_angular_velocity)};
 
@@ -113,6 +116,8 @@ private:
 
 	landing_gear_s 			_landing_gear{};
 	manual_control_setpoint_s	_manual_control_setpoint{};
+		manual_control_setpoint_s	_manual_control_sp{};
+
 	vehicle_control_mode_s		_v_control_mode{};
 	vehicle_status_s		_vehicle_status{};
 
@@ -123,14 +128,19 @@ private:
 	float _battery_status_scale{0.0f};
 
 	perf_counter_t	_loop_perf;			/**< loop duration performance counter */
+static constexpr const float initial_update_rate_hz = 1000.f; /**< loop update rate used for initialization */
+	float _loop_update_rate_hz{initial_update_rate_hz};          /**< current rate-controller loop update rate in [Hz] */
 
 	matrix::Vector3f _rates_sp;			/**< angular rates setpoint */
+	matrix::Vector3f _thrust_sp;			/**< 3-D thrust setpoint */
 
-	float		_thrust_sp{0.0f};		/**< thrust setpoint */
 
 	bool _gear_state_initialized{false};		/**< true if the gear state has been initialized */
 
+hrt_abstime _task_start{hrt_absolute_time()};
 	hrt_abstime _last_run{0};
+	float _dt_accumulator{0.0f};
+	int _loop_counter{0};
 
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::MC_ROLLRATE_P>) _param_mc_rollrate_p,
@@ -153,6 +163,9 @@ private:
 		(ParamFloat<px4::params::MC_YAWRATE_D>) _param_mc_yawrate_d,
 		(ParamFloat<px4::params::MC_YAWRATE_FF>) _param_mc_yawrate_ff,
 		(ParamFloat<px4::params::MC_YAWRATE_K>) _param_mc_yawrate_k,
+		
+		(ParamFloat<px4::params::MC_DTERM_CUTOFF>) _param_mc_dterm_cutoff,			/**< Cutoff frequency for the D-term filter */
+
 
 		(ParamFloat<px4::params::MPC_MAN_Y_MAX>) _param_mpc_man_y_max,			/**< scaling factor from stick to yaw rate */
 
