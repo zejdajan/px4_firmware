@@ -117,7 +117,7 @@ namespace ControlMath
 	{
 		// set Z axis to upward direction
 		Vector3f body_z = Vector3f(0.f, 0.f, 1.f);
-
+omni_proj_axes=0;
 		// desired body_x and body_y axis
 		Vector3f body_x = Vector3f(cos(yaw_sp), sin(yaw_sp), 0.0f);
 		Vector3f body_y = Vector3f(-sinf(yaw_sp), cosf(yaw_sp), 0.0f);
