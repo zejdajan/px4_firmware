@@ -97,19 +97,6 @@ namespace ControlMath
 		omni_status.tilt_angle_meas = current_tilt_angle;
 		omni_status.tilt_direction_meas = current_tilt_dir;
 
-		// Save the optimal tilt angle and direction to counteract the wind
-		if (omni_att_mode == 5 || omni_att_mode == 6)
-		{
-
-			// Calculate the tilt angle and direction
-			omni_att_tilt_angle = current_tilt_angle;
-			omni_att_tilt_dir = current_tilt_dir;
-
-			// Calculate the roll and pitch
-			Eulerf euler = R_body;
-			omni_att_roll = euler(0);
-			omni_att_pitch = euler(1);
-		}
 	}
 
 	void thrustToZeroTiltAttitude(const Vector3f &thr_sp, const float yaw_sp, const matrix::Quatf &att, int omni_proj_axes,
@@ -117,7 +104,7 @@ namespace ControlMath
 	{
 		// set Z axis to upward direction
 		Vector3f body_z = Vector3f(0.f, 0.f, 1.f);
-omni_proj_axes=0;
+		
 		// desired body_x and body_y axis
 		Vector3f body_x = Vector3f(cos(yaw_sp), sin(yaw_sp), 0.0f);
 		Vector3f body_y = Vector3f(-sinf(yaw_sp), cosf(yaw_sp), 0.0f);
@@ -142,18 +129,7 @@ omni_proj_axes=0;
 		att_sp.pitch_body = 0;
 		att_sp.yaw_body = yaw_sp;
 
-		if (omni_proj_axes == 1)
-		{ // if thrust is projected on the current attitude
-			matrix::Dcmf R_body = att;
-
-			for (int i = 0; i < 3; i++)
-			{
-				body_x(i) = R_body(i, 0);
-				body_y(i) = R_body(i, 1);
-				body_z(i) = R_body(i, 2);
-			}
-		}
-
+		
 		att_sp.thrust_body[0] = thr_sp.dot(body_x);
 		att_sp.thrust_body[1] = thr_sp.dot(body_y);
 		att_sp.thrust_body[2] = thr_sp.dot(body_z);
